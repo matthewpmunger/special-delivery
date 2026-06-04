@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.open-next/
+dist/
+coverage/
+*.log
+*.tsbuildinfo
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.local
+.DS_Store

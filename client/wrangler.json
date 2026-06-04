@@ -1,0 +1,22 @@
+{
+  "name": "special-delivery-client",
+  "compatibility_date": "2026-06-02",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "kv_namespaces": [
+    {
+      "binding": "LOBBY_KV",
+      "id": "replace-with-webflow-kv-id"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ASSET_BUCKET",
+      "bucket_name": "special-delivery-assets"
+    }
+  ]
+}

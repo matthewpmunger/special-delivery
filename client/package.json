@@ -1,0 +1,34 @@
+{
+  "name": "@special-delivery/client",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "preview:cloudflare": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "typecheck": "tsc --noEmit",
+    "test": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@opennextjs/cloudflare": "1.19.11",
+    "@special-delivery/shared": "workspace:*",
+    "gsap": "^3.15.0",
+    "howler": "2.2.4",
+    "lucide-react": "1.17.0",
+    "next": "16.2.7",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "socket.io-client": "4.8.3",
+    "zustand": "5.0.14"
+  },
+  "devDependencies": {
+    "@types/howler": "2.2.13",
+    "@types/node": "25.9.1",
+    "@types/react": "19.2.16",
+    "@types/react-dom": "19.2.3",
+    "typescript": "6.0.3",
+    "wrangler": "4.97.0"
+  }
+}

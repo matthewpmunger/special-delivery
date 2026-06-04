@@ -1,0 +1,27 @@
+{
+  "name": "special-delivery",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.25.0",
+  "scripts": {
+    "build": "corepack pnpm -r build",
+    "dev": "corepack pnpm --parallel dev",
+    "dev:client": "corepack pnpm --filter @special-delivery/client dev",
+    "dev:server": "corepack pnpm --filter @special-delivery/server dev",
+    "qa:sim": "corepack pnpm --filter @special-delivery/server qa:sim",
+    "selfplay": "corepack pnpm --filter @special-delivery/server selfplay",
+    "test": "corepack pnpm -r test",
+    "typecheck": "corepack pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
+  }
+}
