@@ -26,6 +26,32 @@ corepack pnpm dev
 The local client defaults to `http://localhost:3000` and the real-time server to
 `http://localhost:4000`.
 
+## Deploying the Socket Server
+
+The Railway service should deploy from the repository root so the server can
+resolve the `shared/` workspace package. The root `railway.json` points Railway
+at the server package and configures `/health` as the deploy healthcheck.
+
+Set these Railway variables:
+
+```bash
+CLIENT_ORIGIN=https://your-webflow-app-domain
+MATCH_TIMER_SCALE=1
+```
+
+Optional, if you attach a Railway volume for telemetry:
+
+```bash
+SQLITE_PATH=/data/telemetry.sqlite
+```
+
+After Railway gives you a public domain, set the frontend runtime variable to
+that URL:
+
+```bash
+RT_SERVER_URL=https://your-railway-server-domain
+```
+
 ## Solo Playtest
 
 Join a lobby in the browser, then use `Solo quick test` or `Solo full test`.

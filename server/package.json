@@ -21,6 +21,7 @@
     "fastest-levenshtein": "1.0.16",
     "nanoid": "5.1.11",
     "socket.io": "4.8.3",
+    "tsx": "4.22.4",
     "zod": "4.4.3"
   },
   "devDependencies": {
@@ -28,7 +29,6 @@
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/node": "25.9.1",
-    "tsx": "4.22.4",
     "typescript": "6.0.3",
     "vitest": "4.1.8"
   }
