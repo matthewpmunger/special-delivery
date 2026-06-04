@@ -7,9 +7,19 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const rtServerUrl = process.env.RT_SERVER_URL ?? process.env.NEXT_PUBLIC_RT_SERVER_URL ?? "";
+  const runtimeConfig = JSON.stringify({ rtServerUrl }).replace(/</g, "\\u003c");
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.__SPECIAL_DELIVERY_CONFIG__=${runtimeConfig};`
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
