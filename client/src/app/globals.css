@@ -658,8 +658,10 @@ select.text-input {
 }
 
 .play-surface-slot {
+  align-self: stretch;
   border-radius: 8px;
   display: grid;
+  height: 100%;
   min-height: 0;
   min-width: 0;
   overflow: hidden;
@@ -674,6 +676,7 @@ select.text-input {
 }
 
 .surface-panel-overlay {
+  align-items: start;
   background: #fff8e8;
   border: 3px solid var(--ink);
   border-radius: 8px;
@@ -681,13 +684,13 @@ select.text-input {
   inset: 0;
   overflow: auto;
   padding: 16px;
-  place-items: center;
+  justify-items: center;
   position: absolute;
   z-index: 7;
 }
 
 .surface-panel-overlay > .panel {
-  align-self: center;
+  align-self: start;
   justify-self: center;
   max-height: 100%;
   overflow: auto;
