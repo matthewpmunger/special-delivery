@@ -1721,10 +1721,20 @@ select.text-input {
 }
 
 .guess-mask {
-  display: inline-flex;
+  align-items: center;
+  display: flex;
   flex-wrap: wrap;
   gap: 3px;
+  justify-content: center;
+  line-height: 0;
   max-width: 100%;
+}
+
+.bubble.guess-mask-bubble {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1;
 }
 
 .guess-mask-cell {
