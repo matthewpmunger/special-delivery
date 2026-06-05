@@ -41,6 +41,7 @@ MATCH_TIMER_SCALE=1
 
 `CLIENT_ORIGIN` should be the browser origin only. If the Webflow app lives at
 `https://example.webflow.io/special-delivery`, use `https://example.webflow.io`.
+For quick prototype testing, `CLIENT_ORIGIN=*` allows any browser origin.
 
 Optional, if you attach a Railway volume for telemetry:
 
