@@ -327,6 +327,10 @@ export function Chat() {
   }, [canEmoji]);
 
   useEffect(() => {
+    setEmojiPickerOpen(false);
+  }, [snapshot?.matchId, snapshot?.phase, snapshot?.role, snapshot?.roundIndex]);
+
+  useEffect(() => {
     if (!canChat) return;
     let focusFrame: number | null = null;
     const focusTimers = CHAT_FOCUS_RETRY_DELAYS.map((delay) =>
