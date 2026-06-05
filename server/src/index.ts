@@ -11,7 +11,7 @@ import { branchRoom, matchRoom } from "./rooms";
 import { Telemetry } from "./telemetry";
 
 const PORT = Number(process.env.PORT ?? 4000);
-const CLIENT_ORIGINS = envList(process.env.CLIENT_ORIGIN, "http://localhost:3000");
+const CLIENT_ORIGINS = envOriginList(process.env.CLIENT_ORIGIN, "http://localhost:3000");
 
 const app = express();
 app.use(cors({ origin: CLIENT_ORIGINS }));
@@ -47,12 +47,21 @@ const registry = new MatchRegistry({
 });
 const socketsByPlayer = new Map<string, Set<string>>();
 
-function envList(value: string | undefined, fallback: string): string[] {
+function envOriginList(value: string | undefined, fallback: string): string[] {
   const entries = (value || fallback)
     .split(",")
     .map((entry) => entry.trim())
+    .map((entry) => originFromUrl(entry))
     .filter(Boolean);
   return entries.length > 0 ? entries : [fallback];
+}
+
+function originFromUrl(value: string): string {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return value.replace(/\/+$/, "");
+  }
 }
 
 app.get("/health", (_req, res) => {

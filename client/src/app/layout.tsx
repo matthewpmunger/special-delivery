@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   description: "A real-time rival-branch draw-and-guess game."
 };
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const rtServerUrl = process.env.RT_SERVER_URL ?? process.env.NEXT_PUBLIC_RT_SERVER_URL ?? "";
   const runtimeConfig = JSON.stringify({ rtServerUrl }).replace(/</g, "\\u003c");

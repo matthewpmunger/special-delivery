@@ -39,6 +39,9 @@ CLIENT_ORIGIN=https://your-webflow-app-domain,http://localhost:3000
 MATCH_TIMER_SCALE=1
 ```
 
+`CLIENT_ORIGIN` should be the browser origin only. If the Webflow app lives at
+`https://example.webflow.io/special-delivery`, use `https://example.webflow.io`.
+
 Optional, if you attach a Railway volume for telemetry:
 
 ```bash

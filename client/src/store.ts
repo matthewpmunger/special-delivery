@@ -19,7 +19,7 @@ import type {
   ShipRevealPayload,
   Stroke
 } from "@special-delivery/shared";
-import { getSocket, type GameSocket } from "./lib/socket";
+import { getSocket, getSocketServerUrl, type GameSocket } from "./lib/socket";
 import { playCue } from "./audio";
 import {
   clearStoredSeatSession,
@@ -94,6 +94,12 @@ function bindSocketListeners(set: StoreSet, get: StoreGet): GameSocket {
     resumeStoredSeat(socket);
   });
   socket.on("disconnect", () => set({ connected: false }));
+  socket.on("connect_error", (error) => {
+    set({
+      connected: false,
+      lastError: `Could not reach the socket server at ${getSocketServerUrl()}. ${error.message}`
+    });
+  });
   socket.on("lobbyState", (lobby) => {
     const previousCount = get().lobby?.players.length;
     if (previousCount !== undefined && lobby.players.length > previousCount) playCue("player-joined");
