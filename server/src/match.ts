@@ -219,9 +219,13 @@ export class MatchRuntime {
       this.drawCursor[branch.id] = 0;
     }
     this.emitGameIntro();
+    const totalRounds = this.totalRounds();
+    const scrambleBeforeRoundIndex = totalRounds > 1 ? Math.floor(totalRounds / 2) : undefined;
     this.telemetry?.append(this.state.id, "match_started", {
       cyclesTotal: this.state.cyclesTotal,
-      players: this.state.branches.map((branch) => branch.players.length)
+      players: this.state.branches.map((branch) => branch.players.length),
+      totalRounds,
+      scrambleBeforeRoundIndex
     });
     this.startRound();
   }
@@ -279,9 +283,10 @@ export class MatchRuntime {
     this.telemetry?.append(this.state.id, "stroke", { branchId: branch.id, points: stroke.points.length, op: stroke.op });
     for (const recipient of this.state.branches.flatMap((candidate) => candidate.players)) {
       const role = roleFor(this.state, recipient.id);
+      const sameBranchPostmaster = recipient.branchId === branch.id && recipient.id === branch.postmasterId;
       const sameBranchCrew = recipient.branchId === branch.id && role === "CREW";
       const inspector = role === "INSPECTOR";
-      if (!recipient.isBot && recipient.connected && (sameBranchCrew || inspector)) {
+      if (!recipient.isBot && recipient.connected && (sameBranchPostmaster || sameBranchCrew || inspector)) {
         this.emitToPlayer(recipient.id, "strokeBroadcast", stroke);
       }
     }
@@ -947,7 +952,11 @@ export class MatchRuntime {
     this.emitToMatch("marv", MARV_LINES.scrambleStart());
     this.emitToMatch("scrambleState", scrambleState(this.scramble, this.state.phaseEndsAt));
     this.broadcastSnapshots();
-    this.telemetry?.append(this.state.id, "scramble_started", { roundIndex: this.state.roundIndex });
+    this.telemetry?.append(this.state.id, "scramble_started", {
+      roundIndex: this.state.roundIndex,
+      nextRoundIndex: this.nextRoundAfterScramble,
+      totalRounds: this.totalRounds()
+    });
     this.scheduleSoloScrambleSorts(introMs);
     this.schedule(() => this.endScramble(), introMs + TIMERS.SCRAMBLE);
   }
@@ -1303,7 +1312,8 @@ export class MatchRuntime {
   }
 
   private shouldRunScrambleBefore(nextRoundIndex: number): boolean {
-    return this.state.cyclesTotal >= 2 && nextRoundIndex === Math.floor(this.totalRounds() / 2);
+    const totalRounds = this.totalRounds();
+    return totalRounds > 1 && nextRoundIndex === Math.floor(totalRounds / 2);
   }
 
   private discardRoundStrokes(): void {

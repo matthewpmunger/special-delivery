@@ -4,6 +4,26 @@ import { MatchRuntime } from "./match";
 import { roleFor } from "./rooms";
 
 describe("match length", () => {
+  it("schedules a halftime scramble during a one-cycle 14-player match", () => {
+    const runtime = new MatchRuntime({ code: "MID", timerScale: 100 });
+
+    for (let index = 0; index < 14; index += 1) {
+      runtime.addPlayer(`Live ${index + 1}`);
+    }
+
+    runtime.startMatch(1);
+    const shouldRunScrambleBefore = (
+      runtime as unknown as { shouldRunScrambleBefore: (nextRoundIndex: number) => boolean }
+    ).shouldRunScrambleBefore.bind(runtime);
+
+    expect(runtime.state.branches.map((branch) => branch.players.length)).toEqual([7, 7]);
+    expect(shouldRunScrambleBefore(2)).toBe(false);
+    expect(shouldRunScrambleBefore(3)).toBe(true);
+    expect(shouldRunScrambleBefore(4)).toBe(false);
+
+    runtime.dispose();
+  });
+
   it("runs three full role cycles when three rounds are selected", () => {
     const runtime = new MatchRuntime({ code: "LEN", timerScale: 100 });
     const players: Player[] = [];

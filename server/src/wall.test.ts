@@ -87,6 +87,49 @@ describe("information wall", () => {
     runtime.dispose();
   });
 
+  it("echoes committed strokes back to the Postmaster who drew them", () => {
+    const events: RuntimeEvent[] = [];
+    const runtime = new MatchRuntime({ code: "ECHO", timerScale: 100, emit: (event) => events.push(event) });
+    for (let index = 0; index < 8; index += 1) runtime.addPlayer(`Echo ${index + 1}`);
+    runtime.startMatch(1);
+
+    const aPostmaster = runtime.state.branches[0].postmasterId;
+    const bPostmaster = runtime.state.branches[1].postmasterId;
+    const candidates = runtime.snapshotFor(aPostmaster).manifestCandidates ?? [];
+    const order = candidates.map((candidate) => candidate.id) as [string, string, string];
+    runtime.state.phaseStartedAt = Date.now() - 1;
+    runtime.submitManifestRank(aPostmaster, order);
+    runtime.submitManifestRank(bPostmaster, order);
+    runtime.state.phaseStartedAt = Date.now() - 1;
+
+    const stroke: Stroke = {
+      id: "postmaster-echo-stroke",
+      points: [
+        { x: 100, y: 100 },
+        { x: 200, y: 200 }
+      ],
+      color: "#c2473c",
+      width: 5,
+      op: "draw",
+      startedAt: Date.now() - 100,
+      endedAt: Date.now()
+    };
+    events.length = 0;
+    runtime.submitStroke(aPostmaster, stroke);
+
+    expect(
+      events.some(
+        (event) =>
+          event.event === "strokeBroadcast" &&
+          event.target.scope === "player" &&
+          event.target.playerId === aPostmaster &&
+          (event.payload as Stroke).id === stroke.id
+      )
+    ).toBe(true);
+
+    runtime.dispose();
+  });
+
   it("shows a correct guess text only to the player who submitted it", () => {
     const events: RuntimeEvent[] = [];
     const runtime = new MatchRuntime({ code: "GUESS", timerScale: 100, emit: (event) => events.push(event) });
