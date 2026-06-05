@@ -1566,6 +1566,7 @@ select.text-input {
 .emoji-picker-row.open {
   max-height: 54px;
   opacity: 1;
+  overflow: visible;
   pointer-events: auto;
   transform: translateY(0);
 }
