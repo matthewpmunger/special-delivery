@@ -97,7 +97,20 @@ const POSTAGE_CLASSES: PostageClass[] = ["STANDARD", "PRIORITY", "FIRST_CLASS"];
 const MAIL_TYPES: MailType[] = ["POSTCARD", "GREETING_CARD", "PACKAGE", "TAKEOUT_MENU", "MAGAZINE", "NEWSPAPER"];
 const WORD_HINT_TICKS = 8;
 const DRAW_STROKE_GRACE_MS = 2_500;
+const SOLO_SCRAMBLE_FIRST_ACTION_MIN_MS = 2_200;
+const SOLO_SCRAMBLE_FIRST_ACTION_MAX_MS = 5_200;
+const SOLO_SCRAMBLE_BOT_STAGGER_MIN_MS = 250;
+const SOLO_SCRAMBLE_BOT_STAGGER_MAX_MS = 850;
+const SOLO_SCRAMBLE_NEXT_ACTION_MIN_MS = 2_400;
+const SOLO_SCRAMBLE_NEXT_ACTION_MAX_MS = 4_600;
+const SOLO_SCRAMBLE_CORRECTION_MIN_MS = 1_300;
+const SOLO_SCRAMBLE_CORRECTION_MAX_MS = 2_600;
+const SOLO_SCRAMBLE_MISS_CHANCE = 0.14;
 const ROOM_CODE = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 8);
+
+function randomDelay(minMs: number, maxMs: number, rng: () => number): number {
+  return Math.round(minMs + rng() * (maxMs - minMs));
+}
 
 export class MatchRuntime {
   readonly state: Match;
@@ -1022,15 +1035,42 @@ export class MatchRuntime {
 
   private scheduleSoloScrambleSorts(introMs = 0): void {
     if (!this.soloPlaytest || !this.scramble) return;
+    const piecesByBot = new Map<string, typeof this.scramble.pieces>();
     for (const piece of this.scramble.pieces) {
       const player = piece.assignedTo ? findPlayer(this.state, piece.assignedTo) : undefined;
       if (!player?.isBot) continue;
-      this.schedule(() => {
-        if (this.state.phase === "SCRAMBLE" && this.scramble) {
-          this.scrambleSort(player.id, piece.id, piece.type);
-        }
-      }, introMs + 250 + Math.floor(this.rng() * 2_500));
+      piecesByBot.set(player.id, [...(piecesByBot.get(player.id) ?? []), piece]);
     }
+
+    [...piecesByBot.entries()].forEach(([playerId, pieces], botIndex) => {
+      const player = findPlayer(this.state, playerId);
+      if (!player?.isBot) return;
+      const shuffledPieces = shuffle(pieces, this.rng);
+      let nextDropAt =
+        introMs +
+        randomDelay(SOLO_SCRAMBLE_FIRST_ACTION_MIN_MS, SOLO_SCRAMBLE_FIRST_ACTION_MAX_MS, this.rng) +
+        botIndex * randomDelay(SOLO_SCRAMBLE_BOT_STAGGER_MIN_MS, SOLO_SCRAMBLE_BOT_STAGGER_MAX_MS, this.rng);
+
+      for (const piece of shuffledPieces) {
+        if (this.rng() < SOLO_SCRAMBLE_MISS_CHANCE) {
+          const wrongBins = MAIL_TYPES.filter((type) => type !== piece.type);
+          const wrongBin = randomItem(wrongBins, this.rng);
+          this.schedule(() => {
+            if (this.state.phase === "SCRAMBLE" && this.scramble) {
+              this.scrambleSort(player.id, piece.id, wrongBin);
+            }
+          }, nextDropAt);
+          nextDropAt += randomDelay(SOLO_SCRAMBLE_CORRECTION_MIN_MS, SOLO_SCRAMBLE_CORRECTION_MAX_MS, this.rng);
+        }
+
+        this.schedule(() => {
+          if (this.state.phase === "SCRAMBLE" && this.scramble) {
+            this.scrambleSort(player.id, piece.id, piece.type);
+          }
+        }, nextDropAt);
+        nextDropAt += randomDelay(SOLO_SCRAMBLE_NEXT_ACTION_MIN_MS, SOLO_SCRAMBLE_NEXT_ACTION_MAX_MS, this.rng);
+      }
+    });
   }
 
   private soloWrongGuess(word: string): string {
