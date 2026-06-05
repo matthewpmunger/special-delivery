@@ -9,7 +9,8 @@ import { playCue } from "../audio";
 import { useGsapAnimation } from "../useGsapAnimation";
 
 export function RevealOverlay({ reveal }: { reveal: ShipRevealPayload }) {
-  const mailType = useGameStore((state) => state.snapshot?.mailType);
+  const snapshot = useGameStore((state) => state.snapshot);
+  const mailType = snapshot?.mailType;
   const [elapsed, setElapsed] = useState(() => Math.max(0, Date.now() - reveal.revealStartAt));
   const overlayRef = useRef<HTMLDivElement>(null);
 
@@ -63,17 +64,26 @@ export function RevealOverlay({ reveal }: { reveal: ShipRevealPayload }) {
         ) : null}
         <div className="reveal-sides">
           {reveal.sides.map((side) => (
-            <div className="reveal-side" key={side.branchId}>
-              <span className="badge">{side.branchName}</span>
+            <div
+              className="reveal-side"
+              data-team={side.branchId === snapshot?.ownBranch.id ? "own" : "opponent"}
+              key={side.branchId}
+            >
+              <span className="badge reveal-branch-badge">{side.branchName}</span>
               <DrawingSnapshot ratio={ratio} strokes={side.strokes} />
               <div className="reveal-side-details">
                 <p className="reveal-word-line">
                   <strong>{side.word}</strong> was the word
                 </p>
-                <p>{side.correctCount} correct {side.correctCount === 1 ? "guess" : "guesses"}</p>
                 <p className="reveal-points-line">
-                  <strong>{side.stampValue}</strong> {side.stampValue === 1 ? "point" : "points"} earned{" "}
-                  <span className="badge red">{formatPostageClass(side.postageClass)}</span>
+                  <strong>{side.stampValue}</strong>
+                  <span>
+                    {side.stampValue === 1 ? "point" : "points"} earned{" "}
+                    <span className="badge red reveal-postage-badge">{formatPostageClass(side.postageClass)}</span>
+                  </span>
+                </p>
+                <p className="reveal-correct-line">
+                  {side.correctCount} correct {side.correctCount === 1 ? "guess" : "guesses"}
                 </p>
               </div>
             </div>
