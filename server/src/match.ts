@@ -107,9 +107,17 @@ const SOLO_SCRAMBLE_CORRECTION_MIN_MS = 1_300;
 const SOLO_SCRAMBLE_CORRECTION_MAX_MS = 2_600;
 const SOLO_SCRAMBLE_MISS_CHANCE = 0.14;
 const ROOM_CODE = customAlphabet("ABCDEFGHJKLMNPQRSTUVWXYZ23456789", 8);
+type SoloScrambleScenario = "SELF_WIN" | "OPPONENT_WIN" | "TIE";
 
 function randomDelay(minMs: number, maxMs: number, rng: () => number): number {
   return Math.round(minMs + rng() * (maxMs - minMs));
+}
+
+function pickSoloScrambleScenario(rng: () => number): SoloScrambleScenario {
+  const roll = rng();
+  if (roll < 1 / 3) return "SELF_WIN";
+  if (roll < 2 / 3) return "OPPONENT_WIN";
+  return "TIE";
 }
 
 export class MatchRuntime {
@@ -1035,12 +1043,24 @@ export class MatchRuntime {
 
   private scheduleSoloScrambleSorts(introMs = 0): void {
     if (!this.soloPlaytest || !this.scramble) return;
+    const soloPlayer = findPlayer(this.state, this.soloPlaytest.playerId);
+    if (!soloPlayer) return;
     const piecesByBot = new Map<string, typeof this.scramble.pieces>();
     for (const piece of this.scramble.pieces) {
       const player = piece.assignedTo ? findPlayer(this.state, piece.assignedTo) : undefined;
       if (!player?.isBot) continue;
       piecesByBot.set(player.id, [...(piecesByBot.get(player.id) ?? []), piece]);
     }
+
+    const scenario = pickSoloScrambleScenario(this.rng);
+    const correctBudget = this.soloScrambleCorrectBudget(scenario, soloPlayer.branchId, piecesByBot);
+    const plannedWinner =
+      scenario === "SELF_WIN" ? soloPlayer.branchId : scenario === "OPPONENT_WIN" ? otherBranchId(soloPlayer.branchId) : undefined;
+    this.telemetry?.append(this.state.id, "solo_scramble_plan", {
+      scenario,
+      playerBranchId: soloPlayer.branchId,
+      correctBudget
+    });
 
     [...piecesByBot.entries()].forEach(([playerId, pieces], botIndex) => {
       const player = findPlayer(this.state, playerId);
@@ -1052,7 +1072,11 @@ export class MatchRuntime {
         botIndex * randomDelay(SOLO_SCRAMBLE_BOT_STAGGER_MIN_MS, SOLO_SCRAMBLE_BOT_STAGGER_MAX_MS, this.rng);
 
       for (const piece of shuffledPieces) {
-        if (this.rng() < SOLO_SCRAMBLE_MISS_CHANCE) {
+        if (correctBudget[player.branchId] <= 0) continue;
+        correctBudget[player.branchId] -= 1;
+
+        const canMiss = plannedWinner && player.branchId !== plannedWinner;
+        if (canMiss && this.rng() < SOLO_SCRAMBLE_MISS_CHANCE) {
           const wrongBins = MAIL_TYPES.filter((type) => type !== piece.type);
           const wrongBin = randomItem(wrongBins, this.rng);
           this.schedule(() => {
@@ -1071,6 +1095,34 @@ export class MatchRuntime {
         nextDropAt += randomDelay(SOLO_SCRAMBLE_NEXT_ACTION_MIN_MS, SOLO_SCRAMBLE_NEXT_ACTION_MAX_MS, this.rng);
       }
     });
+  }
+
+  private soloScrambleCorrectBudget(
+    scenario: SoloScrambleScenario,
+    playerBranchId: BranchId,
+    piecesByBot: Map<string, ScrambleRuntime["pieces"]>
+  ): Record<BranchId, number> {
+    const available: Record<BranchId, number> = { A: 0, B: 0 };
+    for (const [playerId, pieces] of piecesByBot) {
+      const player = findPlayer(this.state, playerId);
+      if (player?.isBot) available[player.branchId] += pieces.length;
+    }
+
+    const opponentBranchId = otherBranchId(playerBranchId);
+    const tieBudget = Math.max(1, Math.min(available.A, available.B, 5 + Math.floor(this.rng() * 5)));
+    if (scenario === "TIE") return { A: tieBudget, B: tieBudget };
+
+    const winner = scenario === "SELF_WIN" ? playerBranchId : opponentBranchId;
+    const loser = otherBranchId(winner);
+    const winnerBudget = Math.max(
+      2,
+      Math.min(available[winner], 7 + Math.floor(this.rng() * 5))
+    );
+    const loserBudget = Math.max(0, Math.min(available[loser], winnerBudget - 2 - Math.floor(this.rng() * 2)));
+    return {
+      A: winner === "A" ? winnerBudget : loserBudget,
+      B: winner === "B" ? winnerBudget : loserBudget
+    };
   }
 
   private soloWrongGuess(word: string): string {
