@@ -1,9 +1,9 @@
 "use client";
 
-import { ClipboardList, Mail, MessageCircle, Pencil, Send, ShieldCheck, Smile, UsersRound } from "lucide-react";
+import { Mail, MessageCircle, Pencil, Send, ShieldCheck, Smile, UsersRound } from "lucide-react";
 import { FormEvent, ReactNode, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Role } from "@special-delivery/shared";
-import type { BoundaryPromptPayload, GuessMaskCell } from "@special-delivery/shared/events";
+import type { GuessMaskCell } from "@special-delivery/shared/events";
 import { useGameStore } from "../store";
 import { usePhaseActive } from "../usePhaseActive";
 import { playCue } from "../audio";
@@ -105,38 +105,6 @@ function RoleBadge({ role }: { role: Role }) {
   );
 }
 
-function BoundaryAction({
-  onPick,
-  prompt
-}: {
-  onPick: (choice: BoundaryPromptPayload["options"][number]["value"]) => void;
-  prompt: BoundaryPromptPayload;
-}) {
-  const title = prompt.kind === "postageClass" ? "Choose the next timer class" : "Choose the next mail type";
-  return (
-    <div className="boundary-action-panel">
-      <div className="boundary-action-copy">
-        <span>Route decision</span>
-        <strong>{title}</strong>
-      </div>
-      <div className="boundary-option-grid">
-        {prompt.options.map((option) => (
-          <button
-            className="secondary-button boundary-option-button"
-            key={option.value}
-            onClick={() => onPick(option.value)}
-            title={option.helper}
-            type="button"
-          >
-            <ClipboardList size={16} />
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function isNearTimelineBottom(node: HTMLDivElement): boolean {
   return node.scrollHeight - node.clientHeight - node.scrollTop <= STICKY_SCROLL_THRESHOLD;
 }
@@ -149,8 +117,6 @@ export function Chat() {
   const guess = useGameStore((state) => state.guess);
   const emoji = useGameStore((state) => state.emoji);
   const ship = useGameStore((state) => state.ship);
-  const boundaryPrompt = useGameStore((state) => state.boundaryPrompt);
-  const boundaryPick = useGameStore((state) => state.boundaryPick);
   const [text, setText] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [chatInputFocused, setChatInputFocused] = useState(false);
@@ -171,8 +137,7 @@ export function Chat() {
     activePhase &&
     !snapshot.ownBranch.correctGuessers.includes(snapshot.playerId);
   const showShipControl = snapshot?.role === "MAILMAN" && snapshot.phase === "DRAW_GUESS";
-  const showBoundaryControl = snapshot?.role === "MAILMAN" && snapshot.phase === "REVEAL_HOLD" && Boolean(boundaryPrompt);
-  const showEmojiOnlyControl = canEmoji && !canChat && !showShipControl && !showBoundaryControl;
+  const showEmojiOnlyControl = canEmoji && !canChat && !showShipControl;
   const canShip = Boolean(showShipControl && activePhase);
   const ownTeamIds = useMemo(
     () => new Set(snapshot?.ownBranch.players.map((player) => player.id) ?? []),
@@ -395,13 +360,11 @@ export function Chat() {
 
   const controlClass = canChat
     ? "has-chat-controls"
-    : showBoundaryControl
-      ? "has-boundary-control"
-      : showShipControl
-        ? "has-ship-control"
-        : showEmojiOnlyControl
-          ? "has-emoji-controls"
-          : "no-controls";
+    : showShipControl
+      ? "has-ship-control"
+      : showEmojiOnlyControl
+        ? "has-emoji-controls"
+        : "no-controls";
 
   useGsapAnimation(panelRef, [snapshot?.role, snapshot?.phase], (gsap) => {
     gsap.fromTo(
@@ -419,7 +382,7 @@ export function Chat() {
     );
   });
 
-  useGsapAnimation(panelRef, [controlClass, boundaryPrompt?.promptId], (gsap) => {
+  useGsapAnimation(panelRef, [controlClass], (gsap) => {
     gsap.fromTo(
       ".chat-input-row, .role-action-row, .emoji-only-row",
       { autoAlpha: 0, y: 10 },
@@ -614,11 +577,6 @@ export function Chat() {
           </button>
           {renderEmojiToggle()}
         </form>
-      ) : showBoundaryControl && boundaryPrompt ? (
-        <div className="role-action-row boundary-action-row">
-          <BoundaryAction onPick={boundaryPick} prompt={boundaryPrompt} />
-          {renderEmojiToggle("role-emoji-toggle")}
-        </div>
       ) : showShipControl ? (
         <div className="role-action-row ship-action-row">
           <button className="ship-button chat-ship-button" disabled={!canShip} onClick={ship} type="button">

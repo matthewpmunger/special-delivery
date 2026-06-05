@@ -6,6 +6,7 @@ import type { BranchId, ClientSnapshot } from "@special-delivery/shared";
 import type { ScrambleResultPayload } from "@special-delivery/shared/events";
 import { useGameStore } from "../store";
 import { Canvas } from "./Canvas";
+import { BoundaryDecision } from "./BoundaryDecision";
 import { Chat } from "./Chat";
 import { ManifestLadder } from "./ManifestLadder";
 import { PhaseSplash } from "./PhaseSplash";
@@ -21,11 +22,14 @@ export function MatchView() {
   const scramble = useGameStore((state) => state.scramble);
   const scrambleResult = useGameStore((state) => state.scrambleResult);
   const matchEnd = useGameStore((state) => state.matchEnd);
+  const boundaryPrompt = useGameStore((state) => state.boundaryPrompt);
+  const boundaryPick = useGameStore((state) => state.boundaryPick);
   const startMatch = useGameStore((state) => state.startMatch);
 
   if (!snapshot) return null;
 
   const ownPlayers = snapshot.ownBranch.players;
+  const showBoundaryDecision = snapshot.role === "MAILMAN" && snapshot.phase === "REVEAL_HOLD" && Boolean(boundaryPrompt);
 
   return (
     <>
@@ -62,6 +66,9 @@ export function MatchView() {
             ) : null}
             <PhaseSplash snapshot={snapshot} />
             {reveal && snapshot.phase !== "MATCH_END" ? <RevealOverlay reveal={reveal} /> : null}
+            {showBoundaryDecision && boundaryPrompt ? (
+              <BoundaryDecision onPick={boundaryPick} prompt={boundaryPrompt} />
+            ) : null}
             {matchEnd ? (
               <div className="match-end-overlay">
                 <StaffBoard />

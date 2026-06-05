@@ -516,10 +516,6 @@ select.text-input {
   grid-template-rows: auto minmax(0, 1fr) auto 42px auto;
 }
 
-.branch-log-panel.has-boundary-control {
-  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
-}
-
 .branch-log-panel.has-emoji-controls {
   grid-template-rows: auto minmax(0, 1fr) auto 42px auto;
 }
@@ -1478,8 +1474,7 @@ select.text-input {
   min-width: 0;
 }
 
-.ship-action-row,
-.boundary-action-row {
+.ship-action-row {
   grid-template-columns: minmax(0, 1fr) 48px;
 }
 
@@ -1502,48 +1497,90 @@ select.text-input {
   justify-content: flex-end;
 }
 
-.boundary-action-panel {
-  background: #fffaf0;
-  border: 2px solid var(--line);
+.boundary-decision-overlay {
+  background:
+    radial-gradient(circle at 50% 16%, rgba(230, 170, 63, 0.16), transparent 28%),
+    #fff8e8;
+  border: 3px solid var(--ink);
   border-radius: 8px;
   display: grid;
-  gap: 8px;
-  min-width: 0;
-  padding: 10px;
+  inset: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 18px;
+  place-items: center;
+  position: absolute;
+  z-index: 10;
 }
 
-.boundary-action-copy {
+.boundary-decision-panel {
+  gap: 16px;
+  max-height: 100%;
+  overflow: auto;
+  padding: 22px;
+  width: min(100%, 760px);
+}
+
+.boundary-decision-heading {
+  align-items: center;
   display: grid;
-  gap: 3px;
+  gap: 12px;
+  grid-template-columns: 56px minmax(0, 1fr);
 }
 
-.boundary-action-copy span {
+.boundary-decision-heading span {
   color: rgba(38, 50, 56, 0.62);
-  font-size: 11px;
-  font-weight: 900;
+  display: block;
+  font-size: 13px;
+  font-weight: 950;
   line-height: 1;
   text-transform: uppercase;
 }
 
-.boundary-action-copy strong {
-  font-size: 16px;
-  line-height: 1.1;
+.boundary-decision-heading h2 {
+  font-size: clamp(28px, 5vw, 46px);
+  line-height: 1;
 }
 
-.boundary-option-grid {
+.boundary-decision-icon {
+  align-items: center;
+  background: rgba(230, 170, 63, 0.2);
+  border-radius: 999px;
+  color: var(--gold);
+  display: flex;
+  height: 56px;
+  justify-content: center;
+  width: 56px;
+}
+
+.boundary-decision-options {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.boundary-decision-option {
+  align-items: start;
   display: grid;
   gap: 6px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  max-height: 154px;
-  overflow: auto;
+  justify-items: start;
+  min-height: 112px;
+  padding: 18px;
+  text-align: left;
 }
 
-.boundary-option-button {
-  font-size: 12px;
-  justify-content: flex-start;
-  min-height: 36px;
-  overflow-wrap: anywhere;
-  padding: 8px;
+.boundary-decision-option span {
+  font-size: 24px;
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.boundary-decision-option small {
+  color: rgba(38, 50, 56, 0.68);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .emoji-toggle-button.active {
@@ -2369,8 +2406,17 @@ select.text-input {
   }
 
   .reveal-sides,
-  .scramble-grid {
+  .scramble-grid,
+  .boundary-decision-options {
     grid-template-columns: 1fr;
+  }
+
+  .boundary-decision-panel {
+    padding: 16px;
+  }
+
+  .boundary-decision-option {
+    min-height: 86px;
   }
 
   .input-row {
@@ -2387,8 +2433,7 @@ select.text-input {
     grid-template-columns: minmax(0, 1fr) 48px 48px;
   }
 
-  .ship-action-row,
-  .boundary-action-row {
+  .ship-action-row {
     grid-template-columns: minmax(0, 1fr) 48px;
   }
 
