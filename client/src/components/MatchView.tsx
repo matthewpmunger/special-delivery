@@ -238,8 +238,9 @@ function LobbyPanel({
         <label>
           Match length
           <select className="text-input" value={cyclesTotal} onChange={(event) => setCyclesTotal(Number(event.target.value))}>
-            <option value={1}>Quick match</option>
-            <option value={2}>Two-cycle match</option>
+            <option value={1}>One round</option>
+            <option value={2}>Two rounds</option>
+            <option value={3}>Three rounds</option>
           </select>
         </label>
         <label>
