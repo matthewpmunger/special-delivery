@@ -1,6 +1,7 @@
 "use client";
 
 import { Howl } from "howler";
+import { publicAssetUrl } from "./lib/public-assets";
 
 export type Cue =
   | "ui-click"
@@ -113,7 +114,7 @@ export function playCue(cue: Cue): void {
 
   let howl = cache.get(cue);
   if (!howl) {
-    howl = new Howl({ src, volume: VOLUME[cue] ?? 0.55 });
+    howl = new Howl({ src: src.map(publicAssetUrl), volume: VOLUME[cue] ?? 0.55 });
     cache.set(cue, howl);
   }
   howl.play();

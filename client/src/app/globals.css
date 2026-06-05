@@ -10,20 +10,20 @@
   --marv-gray: #d9dedb;
   --panel: rgba(255, 252, 242, 0.92);
   --shadow: 0 18px 50px rgba(18, 56, 78, 0.18);
-  --cursor-default: url("/cursors/2x/default.png") 0 0, auto;
-  --cursor-pointer: url("/cursors/2x/pointer.png") 0 0, pointer;
-  --cursor-text: url("/cursors/2x/text.png") 16 16, text;
-  --cursor-pencil: url("/cursors/2x/brush.png") 2 28, crosshair;
-  --cursor-color-pick: url("/cursors/2x/pencil.png") 2 30, pointer;
-  --cursor-fill: url("/cursors/2x/fill.png") 7 25, cell;
-  --cursor-eraser: url("/cursors/2x/eraser.png") 4 28, crosshair;
-  --cursor-no-entry: url("/cursors/2x/no-entry.png") 16 16, not-allowed;
-  --cursor-hourglass: url("/cursors/2x/hourglass.png") 16 16, wait;
-  --cursor-hand-open: url("/cursors/2x/hand-open.png") 16 16, grab;
-  --cursor-hand-grab: url("/cursors/2x/hand-grab.png") 16 16, grabbing;
-  --cursor-move: url("/cursors/2x/move.png") 16 16, move;
-  --cursor-locked: url("/cursors/2x/locked.png") 16 16, not-allowed;
-  --cursor-view: url("/cursors/2x/view.png") 16 16, default;
+  --cursor-default: url("/games/special-delivery/cursors/2x/default.png") 0 0, url("/cursors/2x/default.png") 0 0, auto;
+  --cursor-pointer: url("/games/special-delivery/cursors/2x/pointer.png") 0 0, url("/cursors/2x/pointer.png") 0 0, pointer;
+  --cursor-text: url("/games/special-delivery/cursors/2x/text.png") 16 16, url("/cursors/2x/text.png") 16 16, text;
+  --cursor-pencil: url("/games/special-delivery/cursors/2x/brush.png") 2 28, url("/cursors/2x/brush.png") 2 28, crosshair;
+  --cursor-color-pick: url("/games/special-delivery/cursors/2x/pencil.png") 2 30, url("/cursors/2x/pencil.png") 2 30, pointer;
+  --cursor-fill: url("/games/special-delivery/cursors/2x/fill.png") 7 25, url("/cursors/2x/fill.png") 7 25, cell;
+  --cursor-eraser: url("/games/special-delivery/cursors/2x/eraser.png") 4 28, url("/cursors/2x/eraser.png") 4 28, crosshair;
+  --cursor-no-entry: url("/games/special-delivery/cursors/2x/no-entry.png") 16 16, url("/cursors/2x/no-entry.png") 16 16, not-allowed;
+  --cursor-hourglass: url("/games/special-delivery/cursors/2x/hourglass.png") 16 16, url("/cursors/2x/hourglass.png") 16 16, wait;
+  --cursor-hand-open: url("/games/special-delivery/cursors/2x/hand-open.png") 16 16, url("/cursors/2x/hand-open.png") 16 16, grab;
+  --cursor-hand-grab: url("/games/special-delivery/cursors/2x/hand-grab.png") 16 16, url("/cursors/2x/hand-grab.png") 16 16, grabbing;
+  --cursor-move: url("/games/special-delivery/cursors/2x/move.png") 16 16, url("/cursors/2x/move.png") 16 16, move;
+  --cursor-locked: url("/games/special-delivery/cursors/2x/locked.png") 16 16, url("/cursors/2x/locked.png") 16 16, not-allowed;
+  --cursor-view: url("/games/special-delivery/cursors/2x/view.png") 16 16, url("/cursors/2x/view.png") 16 16, default;
 }
 
 * {

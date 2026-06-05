@@ -6,6 +6,8 @@ import type { DependencyList, RefObject } from "react";
 
 type AnimationScope = RefObject<HTMLElement | null>;
 
+gsap.config({ nullTargetWarn: false });
+
 export function prefersReducedMotion(): boolean {
   return typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
