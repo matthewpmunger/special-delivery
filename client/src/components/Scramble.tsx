@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type CSSProperties } from "react";
+import { useRef, useState, type CSSProperties, type DragEvent } from "react";
 import { MAIL_TYPE_LABEL, MAIL_TYPE_RATIO, type MailType } from "@special-delivery/shared";
 import { useGameStore } from "../store";
 import { usePhaseActive } from "../usePhaseActive";
@@ -68,12 +68,13 @@ export function Scramble() {
             title={`${MAIL_TYPE_LABEL[piece.type]} mail piece`}
             aria-label={`${MAIL_TYPE_LABEL[piece.type]} mail piece. Match by shape, color, or pattern.`}
             onDragEnd={() => setDragging(undefined)}
-            onDragStart={() => {
-              if (canSort) setDragging(piece.id);
+            onDragStart={(event) => {
+              if (!canSort) return;
+              setScrambleDragImage(event, piece.type);
+              setDragging(piece.id);
             }}
           >
             <MailShapeCue mailType={piece.type} size="piece" />
-            <span>{MAIL_TYPE_LABEL[piece.type]}</span>
           </div>
         ))}
       </div>
@@ -123,6 +124,25 @@ function mailShapeCueStyle(mailType: MailType, size: "bin" | "piece"): CSSProper
     height: `${Math.round(ratio.height * scale)}px`,
     width: `${Math.round(ratio.width * scale)}px`
   };
+}
+
+function setScrambleDragImage(event: DragEvent<HTMLElement>, mailType: MailType) {
+  const cue = MAIL_CUES[mailType];
+  const preview = document.createElement("span");
+  const style = mailShapeCueStyle(mailType, "piece");
+  preview.className = `scramble-shape-cue scramble-shape-piece scramble-drag-preview scramble-pattern-${cue.pattern}`;
+  Object.assign(preview.style, style, {
+    left: "-9999px",
+    position: "fixed",
+    top: "-9999px"
+  });
+  document.body.appendChild(preview);
+  const width = parseInt(String(style.width), 10) || 80;
+  const height = parseInt(String(style.height), 10) || 48;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", mailType);
+  event.dataTransfer.setDragImage(preview, Math.round(width / 2), Math.round(height / 2));
+  window.setTimeout(() => preview.remove(), 0);
 }
 
 function ScrambleBin({

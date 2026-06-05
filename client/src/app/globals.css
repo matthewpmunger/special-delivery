@@ -2072,7 +2072,7 @@ select.text-input {
 }
 
 .scramble-piece-grid {
-  grid-template-columns: repeat(auto-fit, minmax(136px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
 }
 
 .scramble-piece,
@@ -2085,13 +2085,14 @@ select.text-input {
 
 .scramble-piece {
   align-items: center;
+  background: transparent;
+  border: 0;
   cursor: var(--cursor-hand-open);
   display: grid;
   font-weight: 900;
-  gap: 8px;
   justify-items: center;
-  min-height: 68px;
-  padding: 8px;
+  min-height: 62px;
+  padding: 4px;
   text-align: center;
   text-transform: uppercase;
 }
@@ -2102,6 +2103,7 @@ select.text-input {
 
 .scramble-piece.dragging {
   cursor: var(--cursor-hand-grab);
+  opacity: 0;
 }
 
 .scramble-bin {
@@ -2142,6 +2144,11 @@ select.text-input {
 
 .scramble-shape-piece {
   justify-self: center;
+}
+
+.scramble-drag-preview {
+  opacity: 1;
+  pointer-events: none;
 }
 
 .scramble-pattern-bars {
