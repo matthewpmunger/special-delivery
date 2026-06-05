@@ -120,12 +120,14 @@ export function Chat() {
   const [text, setText] = useState("");
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
   const [chatInputFocused, setChatInputFocused] = useState(false);
+  const [timelineScrolling, setTimelineScrolling] = useState(false);
   const timelineRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
   const shouldStickToBottomRef = useRef(true);
   const scrollFrameRef = useRef<number | null>(null);
   const scrollSettleTimerRef = useRef<number | null>(null);
+  const scrollIdleTimerRef = useRef<number | null>(null);
   const chatFocusFrameRef = useRef<number | null>(null);
   const chatFocusTimerRef = useRef<number | null>(null);
   const activePhase = usePhaseActive(snapshot);
@@ -248,11 +250,23 @@ export function Chat() {
     if (!node) return;
     const handleScroll = () => {
       shouldStickToBottomRef.current = isNearTimelineBottom(node);
+      setTimelineScrolling(true);
+      if (scrollIdleTimerRef.current) {
+        window.clearTimeout(scrollIdleTimerRef.current);
+      }
+      scrollIdleTimerRef.current = window.setTimeout(() => {
+        setTimelineScrolling(false);
+        scrollIdleTimerRef.current = null;
+      }, 700);
     };
-    handleScroll();
+    shouldStickToBottomRef.current = isNearTimelineBottom(node);
     node.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       node.removeEventListener("scroll", handleScroll);
+      if (scrollIdleTimerRef.current) {
+        window.clearTimeout(scrollIdleTimerRef.current);
+        scrollIdleTimerRef.current = null;
+      }
     };
   }, []);
 
@@ -277,6 +291,9 @@ export function Chat() {
       }
       if (scrollSettleTimerRef.current) {
         window.clearTimeout(scrollSettleTimerRef.current);
+      }
+      if (scrollIdleTimerRef.current) {
+        window.clearTimeout(scrollIdleTimerRef.current);
       }
       if (chatFocusFrameRef.current) {
         window.cancelAnimationFrame(chatFocusFrameRef.current);
@@ -500,7 +517,7 @@ export function Chat() {
         </h2>
         <span className="badge">{timeline.length}</span>
       </div>
-      <div className="timeline" ref={timelineRef}>
+      <div className={`timeline${timelineScrolling ? " is-scrolling" : ""}`} ref={timelineRef}>
         {feed.map((entry) => {
           if (entry.kind === "marv") {
             return renderMarvMessage(entry);
