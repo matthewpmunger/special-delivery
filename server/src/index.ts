@@ -11,16 +11,16 @@ import { branchRoom, matchRoom } from "./rooms";
 import { Telemetry } from "./telemetry";
 
 const PORT = Number(process.env.PORT ?? 4000);
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN ?? "http://localhost:3000";
+const CLIENT_ORIGINS = envList(process.env.CLIENT_ORIGIN, "http://localhost:3000");
 
 const app = express();
-app.use(cors({ origin: CLIENT_ORIGIN }));
+app.use(cors({ origin: CLIENT_ORIGINS }));
 app.use(express.json());
 
 const server = http.createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(server, {
   cors: {
-    origin: CLIENT_ORIGIN,
+    origin: CLIENT_ORIGINS,
     methods: ["GET", "POST"]
   }
 });
@@ -46,6 +46,14 @@ const registry = new MatchRegistry({
   emit: emitRuntimeEvent
 });
 const socketsByPlayer = new Map<string, Set<string>>();
+
+function envList(value: string | undefined, fallback: string): string[] {
+  const entries = (value || fallback)
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  return entries.length > 0 ? entries : [fallback];
+}
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "special-delivery-server" });

@@ -35,7 +35,7 @@ at the server package and configures `/health` as the deploy healthcheck.
 Set these Railway variables:
 
 ```bash
-CLIENT_ORIGIN=https://your-webflow-app-domain
+CLIENT_ORIGIN=https://your-webflow-app-domain,http://localhost:3000
 MATCH_TIMER_SCALE=1
 ```
 
