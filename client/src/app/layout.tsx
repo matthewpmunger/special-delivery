@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import type { Metadata } from "next";
+import { fallbackSocketServerUrl } from "../lib/socket-url";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,7 +11,8 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const rtServerUrl = readRuntimeEnv("RT_SERVER_URL") ?? readRuntimeEnv("NEXT_PUBLIC_RT_SERVER_URL") ?? "";
+  const rtServerUrl =
+    readRuntimeEnv("RT_SERVER_URL") ?? readRuntimeEnv("NEXT_PUBLIC_RT_SERVER_URL") ?? fallbackSocketServerUrl();
   const runtimeConfig = JSON.stringify({ rtServerUrl }).replace(/</g, "\\u003c");
 
   return (

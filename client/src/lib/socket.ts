@@ -3,6 +3,7 @@
 import { io, type Socket } from "socket.io-client";
 import type { ClientToServerEvents, ServerToClientEvents } from "@special-delivery/shared/events";
 import { readStoredSeatSession, storedSeatMatchesCurrentRoom } from "../session";
+import { fallbackSocketServerUrl, normalizeSocketServerUrl } from "./socket-url";
 
 export type GameSocket = Socket<ServerToClientEvents, ClientToServerEvents>;
 
@@ -19,7 +20,8 @@ let socket: GameSocket | undefined;
 export function getSocketServerUrl(): string {
   const runtimeUrl =
     typeof window !== "undefined" ? window.__SPECIAL_DELIVERY_CONFIG__?.rtServerUrl?.trim() : undefined;
-  return trimTrailingSlash(runtimeUrl || process.env.NEXT_PUBLIC_RT_SERVER_URL || "http://localhost:4000");
+  const fallbackUrl = fallbackSocketServerUrl(typeof window !== "undefined" ? window.location.hostname : undefined);
+  return normalizeSocketServerUrl(runtimeUrl || process.env.NEXT_PUBLIC_RT_SERVER_URL || fallbackUrl);
 }
 
 export function getSocket(): GameSocket {
@@ -33,8 +35,4 @@ export function getSocket(): GameSocket {
     });
   }
   return socket;
-}
-
-function trimTrailingSlash(value: string): string {
-  return value.replace(/\/+$/, "");
 }
