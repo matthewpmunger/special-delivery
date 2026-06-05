@@ -10,6 +10,10 @@ export function marv(
 }
 
 export const MARV_LINES = {
+  introName: () =>
+    marv("flow", "Hello. I am MARV, the Mail Automation and Routing Valet. I will supervise today's delivery with confidence and several backup apologies."),
+  introScannerMishap: () =>
+    marv("chaos", "Tiny scanner update: I ran the mail through at the wrong setting and stripped it blank. The manifests survived. Mostly. I am very sorry."),
   lobbyReady: () => marv("flow", "I opened the sorting floor. Please keep fingers away from the scanner."),
   playerJoined: (nickname: string) => marv("flow", `${nickname} joined`),
   roundStart: (roundNumber: number) =>

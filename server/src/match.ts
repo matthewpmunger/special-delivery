@@ -218,7 +218,7 @@ export class MatchRuntime {
       branch.drawOrder = shuffle(branch.players.map((player) => player.id), this.rng);
       this.drawCursor[branch.id] = 0;
     }
-    this.emitToMatch("marv", MARV_LINES.lobbyReady());
+    this.emitGameIntro();
     this.telemetry?.append(this.state.id, "match_started", {
       cyclesTotal: this.state.cyclesTotal,
       players: this.state.branches.map((branch) => branch.players.length)
@@ -239,7 +239,7 @@ export class MatchRuntime {
     const midpointRound = Math.floor(this.totalRounds() / 2);
     this.state.roundIndex = Math.max(0, midpointRound - 1);
     this.nextRoundAfterScramble = midpointRound;
-    this.emitToMatch("marv", MARV_LINES.lobbyReady());
+    this.emitGameIntro();
     this.telemetry?.append(this.state.id, "solo_scramble_test_started", {
       cyclesTotal: this.state.cyclesTotal,
       players: this.state.branches.map((branch) => branch.players.length)
@@ -532,6 +532,12 @@ export class MatchRuntime {
         index += 1;
       }
     }
+  }
+
+  private emitGameIntro(): void {
+    this.emitToMatch("marv", MARV_LINES.introName());
+    this.emitToMatch("marv", MARV_LINES.introScannerMishap());
+    this.emitToMatch("marv", MARV_LINES.lobbyReady());
   }
 
   private startRound(): void {
