@@ -13,7 +13,7 @@
   --cursor-default: url("/games/special-delivery/cursors/2x/default.png") 0 0, url("/cursors/2x/default.png") 0 0, auto;
   --cursor-pointer: url("/games/special-delivery/cursors/2x/pointer.png") 0 0, url("/cursors/2x/pointer.png") 0 0, pointer;
   --cursor-text: url("/games/special-delivery/cursors/2x/text.png") 16 16, url("/cursors/2x/text.png") 16 16, text;
-  --cursor-pencil: url("/games/special-delivery/cursors/2x/brush.png") 2 28, url("/cursors/2x/brush.png") 2 28, crosshair;
+  --cursor-pencil: url("/games/special-delivery/cursors/2x/pen.png") 4 28, url("/cursors/2x/pen.png") 4 28, url("/games/special-delivery/cursors/pen.png") 2 14, url("/cursors/pen.png") 2 14, crosshair;
   --cursor-color-pick: url("/games/special-delivery/cursors/2x/pencil.png") 2 30, url("/cursors/2x/pencil.png") 2 30, pointer;
   --cursor-fill: url("/games/special-delivery/cursors/2x/fill.png") 7 25, url("/cursors/2x/fill.png") 7 25, cell;
   --cursor-eraser: url("/games/special-delivery/cursors/2x/eraser.png") 4 28, url("/cursors/2x/eraser.png") 4 28, crosshair;
