@@ -197,18 +197,14 @@ input[type="range"] {
 
 .scoreboard-team {
   background: var(--postal);
+  justify-content: center;
   height: 100%;
   min-height: 66px;
   padding: 0 24px;
 }
 
-.scoreboard-team.own {
-  justify-content: flex-end;
-}
-
 .scoreboard-team.opponent {
   background: var(--green);
-  justify-content: flex-start;
 }
 
 .scoreboard-team span {
@@ -223,7 +219,7 @@ input[type="range"] {
 
 .scoreboard-team strong {
   color: #fffaf0;
-  font-size: 28px;
+  font-size: 38px;
   font-variant-numeric: tabular-nums;
   line-height: 1;
   min-width: 32px;

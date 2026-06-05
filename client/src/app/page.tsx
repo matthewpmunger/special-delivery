@@ -259,7 +259,6 @@ function MatchScoreboard() {
   return (
     <div className={`match-scoreboard ${timerActive ? "" : "idle"} ${briefing ? "briefing" : ""}`} aria-live="polite" ref={scoreboardRef}>
       <div className="scoreboard-team own">
-        <span>{snapshot.ownBranch.name}</span>
         <strong>{snapshot.ownBranch.score}</strong>
       </div>
       <div className="scoreboard-clock">
@@ -269,7 +268,6 @@ function MatchScoreboard() {
       </div>
       <div className="scoreboard-team opponent">
         <strong>{snapshot.opponent.score}</strong>
-        <span>{snapshot.opponent.name}</span>
       </div>
     </div>
   );
