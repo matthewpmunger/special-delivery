@@ -178,6 +178,11 @@ export class MatchRuntime {
     return player;
   }
 
+  announcePlayerJoined(player: Pick<Player, "id" | "nickname" | "branchId">): void {
+    this.emitToMatch("marv", MARV_LINES.playerJoined(player.nickname));
+    this.telemetry?.append(this.state.id, "player_joined_announced", { playerId: player.id, branchId: player.branchId });
+  }
+
   reconnectPlayer(playerId: string): void {
     const player = findPlayer(this.state, playerId);
     if (!player) return;

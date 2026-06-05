@@ -11,6 +11,7 @@ export function marv(
 
 export const MARV_LINES = {
   lobbyReady: () => marv("flow", "I opened the sorting floor. Please keep fingers away from the scanner."),
+  playerJoined: (nickname: string) => marv("flow", `${nickname} joined`),
   roundStart: (roundNumber: number) =>
     marv("flow", `Round ${roundNumber} is on the belt. The manifest printer is making confident noises.`),
   noManifestAgreement: () =>

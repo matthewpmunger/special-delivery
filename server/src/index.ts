@@ -98,6 +98,7 @@ io.on("connection", (socket) => {
       return;
     }
     bindSocketToPlayer(socket, joined.match, joined.player);
+    joined.match.announcePlayerJoined(joined.player);
     socket.emit("lobbyState", joined.match.lobbyState());
     socket.emit("state", joined.match.snapshotFor(joined.player.id));
   });

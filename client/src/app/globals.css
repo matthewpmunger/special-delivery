@@ -672,7 +672,7 @@ select.text-input {
 }
 
 .surface-panel-overlay {
-  align-items: start;
+  align-items: center;
   background: #fff8e8;
   border: 3px solid var(--ink);
   border-radius: 8px;
@@ -686,7 +686,7 @@ select.text-input {
 }
 
 .surface-panel-overlay > .panel {
-  align-self: start;
+  align-self: center;
   justify-self: center;
   max-height: 100%;
   overflow: auto;
