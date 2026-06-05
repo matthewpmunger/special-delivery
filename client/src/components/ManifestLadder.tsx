@@ -7,12 +7,19 @@ import { usePhaseActive } from "../usePhaseActive";
 import { playCue } from "../audio";
 import { useGsapAnimation } from "../useGsapAnimation";
 
+type MoveFeedback = {
+  direction: -1 | 1;
+  id: string;
+  nonce: number;
+};
+
 export function ManifestLadder() {
   const snapshot = useGameStore((state) => state.snapshot);
   const candidates = snapshot?.manifestCandidates;
   const rankManifest = useGameStore((state) => state.rankManifest);
   const [order, setOrder] = useState<string[]>(() => candidates?.map((candidate) => candidate.id) ?? []);
   const [locked, setLocked] = useState(false);
+  const [moveFeedback, setMoveFeedback] = useState<MoveFeedback | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const candidateKey = candidates?.map((candidate) => candidate.id).join(":") ?? "";
   const canRank = usePhaseActive(snapshot);
@@ -48,16 +55,44 @@ export function ManifestLadder() {
     gsap.to(".manifest-option", { y: 0, duration: 0.22, stagger: 0.04, ease: "power2.out" });
   });
 
+  useGsapAnimation(panelRef, [moveFeedback?.nonce], (gsap, root) => {
+    if (!moveFeedback) return;
+    const movedCard = [...root.querySelectorAll<HTMLElement>(".manifest-option")].find(
+      (option) => option.dataset.candidateId === moveFeedback.id
+    );
+    if (!movedCard) return;
+    const fromY = moveFeedback.direction === -1 ? 22 : -22;
+    gsap.fromTo(
+      movedCard,
+      { boxShadow: "0 0 0 0 rgba(230, 170, 63, 0.55)", scale: 0.985, y: fromY },
+      {
+        boxShadow: "0 0 0 10px rgba(230, 170, 63, 0)",
+        clearProps: "boxShadow,scale,y",
+        duration: 0.32,
+        ease: "back.out(1.7)",
+        scale: 1,
+        y: 0
+      }
+    );
+    gsap.fromTo(
+      movedCard,
+      { backgroundColor: "rgba(230, 170, 63, 0.28)" },
+      { backgroundColor: "#fffaf0", clearProps: "backgroundColor", duration: 0.48, ease: "power2.out" }
+    );
+  });
+
   if (!candidates?.length) return null;
 
   function move(index: number, delta: -1 | 1) {
+    const next = index + delta;
+    const item = order[index];
+    const swapItem = order[next];
+    if (locked || !canRank || next < 0 || next >= order.length || !item || !swapItem) return;
+    playCue("ui-click");
+    setMoveFeedback({ direction: delta, id: item, nonce: Date.now() });
     setOrder((current) => {
       const copy = [...current];
-      const next = index + delta;
-      if (next < 0 || next >= copy.length) return copy;
-      const item = copy[index];
-      if (!item) return copy;
-      copy[index] = copy[next] as string;
+      copy[index] = swapItem;
       copy[next] = item;
       return copy;
     });
@@ -71,7 +106,7 @@ export function ManifestLadder() {
       </div>
       <div className="manifest-list">
         {orderedCandidates.map((candidate, index) => (
-          <div className={`manifest-option ${locked ? "locked" : ""}`} key={candidate.id}>
+          <div className={`manifest-option ${locked ? "locked" : ""}`} data-candidate-id={candidate.id} key={candidate.id}>
             <span>
               {index + 1}. {candidate.text}
             </span>
