@@ -52,6 +52,12 @@ that URL:
 RT_SERVER_URL=https://your-railway-server-domain
 ```
 
+## Deploying the Webflow Cloud Client
+
+When connecting this monorepo to Webflow Cloud, set the app directory path to
+`/client`. The Next.js app's `package.json`, `webflow.json`, `wrangler.json`,
+and OpenNext config all live in that folder.
+
 ## Solo Playtest
 
 Join a lobby in the browser, then use `Solo quick test` or `Solo full test`.
