@@ -811,7 +811,7 @@ select.text-input {
 .phase-splash-card {
   align-items: center;
   display: grid;
-  gap: clamp(5px, 1.2cqh, 12px);
+  gap: clamp(8px, 1.8cqh, 16px);
   justify-items: center;
   max-height: 100%;
   overflow: hidden;
@@ -866,9 +866,7 @@ select.text-input {
   width: 100%;
 }
 
-.phase-splash-role span,
-.phase-role-card span,
-.phase-countdown span {
+.phase-splash-role span {
   color: currentColor;
   font-size: clamp(10px, 1.8cqh, 12px);
   font-weight: 950;
@@ -887,60 +885,6 @@ select.text-input {
   color: rgba(255, 250, 240, 0.78);
   font-size: clamp(13px, 2.4cqh, 16px);
   line-height: 1.2;
-}
-
-.phase-role-grid {
-  background: rgba(255, 250, 240, 0.1);
-  border: 2px solid rgba(255, 250, 240, 0.28);
-  border-radius: 8px;
-  display: grid;
-  gap: 0;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
-  max-height: min(26cqh, 190px);
-  max-width: 860px;
-  overflow: hidden;
-  width: 100%;
-}
-
-.phase-role-stack {
-  border-right: 2px solid rgba(255, 250, 240, 0.22);
-  display: grid;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  min-width: 0;
-}
-
-.phase-role-card {
-  align-content: start;
-  color: #fffaf0;
-  display: grid;
-  gap: clamp(5px, 1.1cqh, 10px);
-  min-height: clamp(52px, 10cqh, 92px);
-  padding: clamp(10px, 2cqh, 16px);
-}
-
-.phase-role-stack .phase-role-card:first-child {
-  border-bottom: 2px solid rgba(255, 250, 240, 0.22);
-}
-
-.crew-role-card {
-  align-content: start;
-  min-height: clamp(104px, 20cqh, 184px);
-}
-
-.phase-role-card.active {
-  background: var(--gold);
-  color: var(--ink);
-}
-
-.phase-role-names {
-  display: grid;
-  gap: clamp(3px, 0.8cqh, 6px);
-  justify-items: center;
-}
-
-.phase-role-card strong {
-  font-size: clamp(16px, 3cqh, 20px);
-  line-height: 1.1;
 }
 
 .phase-countdown {
@@ -2392,23 +2336,6 @@ select.text-input {
 
   .phase-splash-overlay {
     padding: 16px;
-  }
-
-  .phase-role-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .phase-role-stack {
-    border-bottom: 2px solid rgba(255, 250, 240, 0.22);
-    border-right: 0;
-  }
-
-  .phase-role-card {
-    min-height: 0;
-  }
-
-  .crew-role-card {
-    min-height: 0;
   }
 
   .phase-countdown {
