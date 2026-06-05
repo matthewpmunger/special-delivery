@@ -55,7 +55,7 @@ export function MatchView() {
               </div>
             ) : null}
             {snapshot.phase === "MANIFEST" ? (
-              <div className="surface-panel-overlay">
+              <div className="surface-panel-overlay manifest-surface-overlay">
                 <ManifestLadder />
               </div>
             ) : null}

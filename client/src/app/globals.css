@@ -693,6 +693,14 @@ select.text-input {
   width: min(100%, 560px);
 }
 
+.manifest-surface-overlay {
+  align-items: center;
+}
+
+.manifest-surface-overlay > .panel {
+  align-self: center;
+}
+
 .scramble-result-panel {
   gap: 14px;
 }
