@@ -28,7 +28,7 @@ export function Scramble() {
 
   if (!scramble) return null;
 
-  const visiblePieces = scramble.pieces.filter((piece) => !piece.sortedBinId).slice(0, 24);
+  const pieceSlots = scramble.pieces.slice(0, 24);
   const sortedByBin = scramble.pieces.reduce<Record<string, typeof scramble.pieces>>((groups, piece) => {
     if (!piece.sortedBinId) return groups;
     groups[piece.sortedBinId] = [...(groups[piece.sortedBinId] ?? []), piece];
@@ -59,22 +59,25 @@ export function Scramble() {
         ))}
       </div>
       <div className="scramble-grid scramble-piece-grid">
-        {visiblePieces.map((piece) => (
-          <div
-            className={`scramble-piece${dragging === piece.id ? " dragging" : ""}`}
-            draggable={canSort}
-            key={piece.id}
-            style={mailCueStyle(piece.type)}
-            title={`${MAIL_TYPE_LABEL[piece.type]} mail piece`}
-            aria-label={`${MAIL_TYPE_LABEL[piece.type]} mail piece. Match by shape, color, or pattern.`}
-            onDragEnd={() => setDragging(undefined)}
-            onDragStart={(event) => {
-              if (!canSort) return;
-              setScrambleDragImage(event, piece.type);
-              setDragging(piece.id);
-            }}
-          >
-            <MailShapeCue mailType={piece.type} size="piece" />
+        {pieceSlots.map((piece) => (
+          <div className="scramble-piece-cell" key={piece.id}>
+            {!piece.sortedBinId ? (
+              <div
+                className={`scramble-piece${dragging === piece.id ? " dragging" : ""}`}
+                draggable={canSort}
+                style={mailCueStyle(piece.type)}
+                title={`${MAIL_TYPE_LABEL[piece.type]} mail piece`}
+                aria-label={`${MAIL_TYPE_LABEL[piece.type]} mail piece. Match by shape, color, or pattern.`}
+                onDragEnd={() => setDragging(undefined)}
+                onDragStart={(event) => {
+                  if (!canSort) return;
+                  setScrambleDragImage(event, piece.type);
+                  setDragging(piece.id);
+                }}
+              >
+                <MailShapeCue mailType={piece.type} size="piece" />
+              </div>
+            ) : null}
           </div>
         ))}
       </div>

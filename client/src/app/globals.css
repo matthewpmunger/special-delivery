@@ -2027,6 +2027,12 @@ select.text-input {
   grid-template-columns: repeat(auto-fit, minmax(104px, 1fr));
 }
 
+.scramble-piece-cell {
+  display: grid;
+  min-height: 62px;
+  place-items: center;
+}
+
 .scramble-piece,
 .scramble-bin {
   background: #fffaf0;
@@ -2043,7 +2049,6 @@ select.text-input {
   display: grid;
   font-weight: 900;
   justify-items: center;
-  min-height: 62px;
   padding: 4px;
   text-align: center;
   text-transform: uppercase;
