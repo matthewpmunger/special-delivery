@@ -1385,54 +1385,58 @@ select.text-input {
 
 .chat-role-badge {
   align-items: center;
+  background: var(--role-soft-bg);
+  border: 2px solid var(--role-soft-border);
+  border-left: 8px solid var(--role-accent);
   border-radius: 8px;
-  color: #fffaf0;
+  color: var(--ink);
   display: grid;
   gap: 10px;
   grid-template-columns: 48px minmax(0, 1fr);
   min-height: 86px;
   padding: 12px;
+  padding-left: 8px;
+  --role-accent: var(--postal);
+  --role-soft-bg: rgba(35, 95, 132, 0.1);
+  --role-soft-border: rgba(35, 95, 132, 0.34);
+  --role-icon-bg: rgba(35, 95, 132, 0.16);
 }
 
 .chat-role-badge.role-postmaster {
-  background: var(--gold);
-  color: var(--ink);
+  --role-accent: var(--gold);
+  --role-soft-bg: rgba(230, 170, 63, 0.14);
+  --role-soft-border: rgba(230, 170, 63, 0.42);
+  --role-icon-bg: rgba(230, 170, 63, 0.2);
 }
 
 .chat-role-badge.role-mailman {
-  background: rgba(194, 71, 60, 0.1);
-  border: 2px solid rgba(194, 71, 60, 0.34);
-  border-left: 8px solid var(--red);
-  color: var(--ink);
-  padding-left: 8px;
-}
-
-.chat-role-badge.role-mailman .chat-role-icon {
-  background: rgba(194, 71, 60, 0.16);
-  color: var(--red);
-}
-
-.chat-role-badge.role-mailman span,
-.chat-role-badge.role-mailman small {
-  color: rgba(38, 50, 56, 0.72);
-  opacity: 1;
-}
-
-.chat-role-badge.role-mailman strong {
-  color: var(--red);
+  --role-accent: var(--red);
+  --role-soft-bg: rgba(194, 71, 60, 0.1);
+  --role-soft-border: rgba(194, 71, 60, 0.34);
+  --role-icon-bg: rgba(194, 71, 60, 0.16);
 }
 
 .chat-role-badge.role-crew {
-  background: var(--postal);
+  --role-accent: var(--postal);
+  --role-soft-bg: rgba(35, 95, 132, 0.1);
+  --role-soft-border: rgba(35, 95, 132, 0.34);
+  --role-icon-bg: rgba(35, 95, 132, 0.16);
 }
 
 .chat-role-badge.role-inspector {
-  background: var(--green);
+  --role-accent: var(--green);
+  --role-soft-bg: rgba(67, 127, 91, 0.1);
+  --role-soft-border: rgba(67, 127, 91, 0.34);
+  --role-icon-bg: rgba(67, 127, 91, 0.16);
+}
+
+.chat-role-badge .chat-role-icon {
+  background: var(--role-icon-bg);
+  color: var(--role-accent);
 }
 
 .chat-role-icon {
   align-items: center;
-  background: rgba(255, 250, 240, 0.22);
   border-radius: 999px;
   display: flex;
   height: 48px;
@@ -1442,10 +1446,10 @@ select.text-input {
 
 .chat-role-badge span,
 .chat-role-badge small {
+  color: rgba(38, 50, 56, 0.72);
   display: block;
   font-weight: 900;
   line-height: 1;
-  opacity: 0.72;
   text-transform: uppercase;
 }
 
@@ -1454,6 +1458,7 @@ select.text-input {
 }
 
 .chat-role-badge strong {
+  color: var(--role-accent);
   display: block;
   font-size: 28px;
   line-height: 1;
