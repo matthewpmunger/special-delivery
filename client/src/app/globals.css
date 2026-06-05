@@ -1956,6 +1956,8 @@ select.text-input {
 }
 
 .reveal-drawing-preview {
+  align-items: center;
+  container-type: size;
   display: grid;
   justify-items: center;
   min-height: 0;
@@ -1964,16 +1966,18 @@ select.text-input {
 }
 
 .reveal-drawing-paper {
+  --reveal-paper-max-width: 460px;
+  --reveal-paper-ratio: 1;
   background: #ffffff;
   border: 2px solid var(--line);
   border-radius: 6px;
-  height: 100%;
+  height: min(100cqh, calc(100cqw / var(--reveal-paper-ratio)), calc(var(--reveal-paper-max-width) / var(--reveal-paper-ratio)));
   max-height: 100%;
   max-width: 100%;
   min-height: 0;
   overflow: hidden;
   position: relative;
-  width: auto;
+  width: min(100cqw, var(--reveal-paper-max-width), calc(100cqh * var(--reveal-paper-ratio)));
 }
 
 .reveal-drawing-svg {

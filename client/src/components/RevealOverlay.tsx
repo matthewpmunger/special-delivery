@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Lock, Trophy } from "lucide-react";
 import { MAIL_TYPE_RATIO } from "@special-delivery/shared";
 import type { ShipRevealPayload, Stroke } from "@special-delivery/shared";
@@ -97,10 +97,15 @@ function DrawingSnapshot({
   strokes: Stroke[];
 }) {
   const maxWidth = ratio.height > ratio.width ? "220px" : ratio.width === ratio.height ? "340px" : "460px";
+  const paperStyle = {
+    "--reveal-paper-max-width": maxWidth,
+    "--reveal-paper-ratio": ratio.width / ratio.height,
+    aspectRatio: `${ratio.width} / ${ratio.height}`
+  } as CSSProperties;
 
   return (
     <div className="reveal-drawing-preview">
-      <div className="reveal-drawing-paper" style={{ aspectRatio: `${ratio.width} / ${ratio.height}`, maxWidth }}>
+      <div className="reveal-drawing-paper" style={paperStyle}>
         <svg className="reveal-drawing-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
           {strokes
             .filter((stroke) => stroke.op === "fill")
